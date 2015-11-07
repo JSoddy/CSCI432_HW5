@@ -10,27 +10,6 @@ import (
 // The maximum value we will put in any of our matrices
 const cellmax = 10
 
-func printmatrix(s [][]int){
-	// Let's just find out how many spaces we need to allow for each number.
-	//  Nevermind why
-	numwidth := math.Floor(math.Log10(math.Pow(cellmax, 3))) + 1
-	fmt.Println()
-	//test := 7
-	for i := range s {
-		fmt.Print("| ")
-		for j := range s[i] {
-			// Pay no attention to this ugliness. It's not really here
-			for k := 0; k < int(numwidth - 
-				math.Max(1,math.Floor(math.Log10(float64(s[i][j]))+1))); k++ {
-					fmt.Print(" ")
-				}
-			// What ugliness? I don't know what you are talking about.
-			fmt.Printf("%d ", s[i][j])
-		}
-		fmt.Println("|")
-	}
-}
-
 func main(){
 	rand.Seed(int64(time.Now().Nanosecond()))
 	l := rand.Intn(8) + 2
@@ -95,4 +74,23 @@ func rndmatrix(h int, w int) (matrix [][]int){
 	return // matrix
 }
 
-
+func printmatrix(s [][]int){
+	// Let's just find out how many spaces we need to allow for each number.
+	//  Nevermind why
+	numwidth := math.Floor(math.Log10(math.Pow(cellmax, 3))) + 1
+	fmt.Println()
+	//test := 7
+	for i := range s {
+		fmt.Print("| ")
+		for j := range s[i] {
+			// Pay no attention to this ugliness. It's not really here
+			for k := 0; k < int(numwidth - 
+				math.Max(1,math.Floor(math.Log10(float64(s[i][j]))+1))); k++ {
+					fmt.Print(" ")
+				}
+			// What ugliness? I don't know what you are talking about.
+			fmt.Printf("%d ", s[i][j])
+		}
+		fmt.Println("|")
+	}
+}
