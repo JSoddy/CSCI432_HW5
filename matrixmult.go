@@ -2,16 +2,30 @@ package main
 
 import (
 	"fmt"
+	"math"
 	"math/rand"
 	"time"
 	)
 
+// The maximum value we will put in any of our matrices
+const cellmax = 10
+
 func printmatrix(s [][]int){
+	// Let's just find out how many spaces we need to allow for each number.
+	//  Nevermind why
+	numwidth := math.Floor(math.Log10(math.Pow(cellmax, 3))) + 1
 	fmt.Println()
+	//test := 7
 	for i := range s {
 		fmt.Print("| ")
 		for j := range s[i] {
-			fmt.Printf("%7d ", s[i][j])
+			// Pay no attention to this ugliness. It's not really here
+			for k := 0; k < int(numwidth - 
+				math.Max(1,math.Floor(math.Log10(float64(s[i][j]))+1))); k++ {
+					fmt.Print(" ")
+				}
+			// What ugliness? I don't know what you are talking about.
+			fmt.Printf("%d ", s[i][j])
 		}
 		fmt.Println("|")
 	}
@@ -19,12 +33,12 @@ func printmatrix(s [][]int){
 
 func main(){
 	rand.Seed(int64(time.Now().Nanosecond()))
-	l := rand.Intn(10)
-	m := rand.Intn(10)
-	n := rand.Intn(10)
+	l := rand.Intn(8) + 2
+	m := rand.Intn(8) + 2
+	n := rand.Intn(8) + 2
 
-	matrix1 := rndmatrix(m + 2, l + 2)
-	matrix2 := rndmatrix(n + 2, m + 2)
+	matrix1 := rndmatrix(l, m)
+	matrix2 := rndmatrix(m, n)
 		
 	printmatrix(matrix1)
 	printmatrix(matrix2)
@@ -70,18 +84,15 @@ func dankalgy1(matrix1 [][]int, matrix2 [][]int) (matrix3 [][]int){
 // function to create a randomly initialized matrix
 //  accepts two integers w and h
 //  returns a w by h matrix represented as a 2D slice
-func rndmatrix(w int, h int) (matrix [][]int){
+func rndmatrix(h int, w int) (matrix [][]int){
 	matrix = make([][]int, h)
 	for i := range matrix {
 		matrix[i] = make([]int, w)
 		for j := range matrix[i] {
-			matrix[i][j] = rand.Intn(1024)
+			matrix[i][j] = rand.Intn(cellmax)
 		}
 	}
 	return // matrix
 }
-
-
-
 
 
