@@ -32,8 +32,6 @@ func main(){
 	matrix3 := dankalgy1(matrix1, matrix2)
 
 	printmatrix(matrix3)
-
-	fmt.Println(len(matrix3))
 }
 
 // Function to calculate the product of two integer matrices
