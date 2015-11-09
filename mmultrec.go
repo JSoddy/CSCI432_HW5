@@ -68,28 +68,28 @@ func matrix_mult_recursive(factor1[][]int, factor2[][]int){
 		//A12 = A[n/2:n][0:n/2]
 		//A21 = A[0:n/2][n/2:n]
 		//A22 = A[n/2:n][n/2:n]
-	fmt.Println("a11")
+	// fmt.Println("a11")
 	a11:=[][]int{}
 	for i := 0; i < lenF1/2; i++ {
 			a11 = append(a11, factor1[i][:2])
 	}
 	// printmatrix(a11)
 
-	fmt.Println("a12")
+	// fmt.Println("a12")
 	a12:=[][]int{}
 	for i := 0; i < lenF1/2; i++ {
 			a12 = append(a12, factor1[i][2:])
 	}
 	// printmatrix(a12)
 
-	fmt.Println("a21")
+	// fmt.Println("a21")
 	a21:=[][]int{}
 	for i := lenF1/2; i < lenF1; i++ {
 			a21 = append(a21, factor1[i][:2])
 	}
 	// printmatrix(a21)
 
-	fmt.Println("a22")
+	// fmt.Println("a22")
 	a22:=[][]int{}
 	for i := lenF1/2; i < lenF1; i++ {
 			a22 = append(a22, factor1[i][2:])
@@ -101,7 +101,7 @@ func matrix_mult_recursive(factor1[][]int, factor2[][]int){
 		//B21 = B[0:n/2][n/2:n]
 		//B22 = B[n/2:n][n/2:n]
 
-		fmt.Println("b11")
+		// fmt.Println("b11")
 		b11:=[][]int{}
 		for i := 0; i < lenF2/2; i++ {
 				b11 = append(b11, factor2[i][:2])
@@ -113,9 +113,9 @@ func matrix_mult_recursive(factor1[][]int, factor2[][]int){
 		for i := 0; i < lenF2/2; i++ {
 				b12 = append(b12, factor2[i][2:])
 		}
-		// printmatrix(b12)
+		printmatrix(b12)
 
-		fmt.Println("b21")
+		// fmt.Println("b21")
 		b21:=[][]int{}
 		for i := lenF2/2; i < lenF2; i++ {
 				b21 = append(b21, factor2[i][:2])
@@ -127,19 +127,29 @@ func matrix_mult_recursive(factor1[][]int, factor2[][]int){
 		for i := lenF2/2; i < lenF2; i++ {
 				b22 = append(b22, factor2[i][2:])
 		}
-		// printmatrix(b22)
+		printmatrix(b22)
 
 	//Create ten sub-matrices, S1-S10 through addition or subtraction
 		//S1 = B12-B22
+		s1:=subMatrix(b12,b22)
 		//S2 = A11+A12
+		s2:=addMatrix(a11,a12)
 		//S3 = A21+A22
+		s3:=addMatrix(a21,a22)
 		//S4 = B21-B11
+		s4:=subMatrix(b21,b11)
 		//S5 = A11+A22
+		s5:=addMatrix(a11,a22)
 		//S6 = B11+B22
+		s6:=addMatrix(b11,b22)
 		//S7 = A12-A22
+		s7:=subMatrix(a12,a22)
 		//S8 = B21+B22
+		s8:=addMatrix(b21,b22)
 		//S9 = A11-A21
+		s9:=subMatrix(a11,a21)
 		//S10 = B11+B12
+		s10:=addMatrix(b11,b12)
 	//Compute seven matrix products P1-P7
 		//P1 = A11*S1
 		//P2 = S2*B22
@@ -252,6 +262,30 @@ func rndmatrix(h int, w int) (matrix [][]int){
 		}
 	}
 	return // matrix
+}
+
+func addMatrix(a [][]int, b [][]int) (matrix [][]int){
+	length := len(a)
+	matrix = make([][]int,length)
+	for i := 0; i < length; i++ {
+		matrix[i] = make([]int,length)
+		for j := 0; j < length; j++ {
+			matrix[i][j]=int(a[i][j]+b[i][j])
+		}
+	}
+	return //matrix
+}
+
+func subMatrix(a [][]int, b [][]int) (matrix [][]int){
+	length := len(a)
+	matrix = make([][]int,length)
+	for i := 0; i < length; i++ {
+		matrix[i] = make([]int,length)
+		for j := 0; j < length; j++ {
+			matrix[i][j]=int(a[i][j]-b[i][j])
+		}
+	}
+	return //matrix
 }
 
 func main() {
