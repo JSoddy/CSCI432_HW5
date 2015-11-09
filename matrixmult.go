@@ -18,15 +18,15 @@ func main(){
 
 	matrix1 := rndmatrix(l, m)
 	matrix2 := rndmatrix(m, n)
-		
+
 	printmatrix(matrix1)
 	printmatrix(matrix2)
 
-	matrix3 := dankalgy1(matrix1, matrix2)
+	// matrix3 := dankalgy1(matrix1, matrix2)
 
-	printmatrix(matrix3)
+	// printmatrix(matrix3)
 
-	printmatrix(mm_rec_init(matrix1, matrix2))
+	// printmatrix(mm_rec_init(matrix1, matrix2))
 }
 
 
@@ -55,7 +55,7 @@ func printmatrix(s [][]int){
 		fmt.Print("| ")
 		for j := range s[i] {
 			// Pay no attention to this ugliness. It's not really here
-			for k := 0; k < int(numwidth - 
+			for k := 0; k < int(numwidth -
 				math.Max(1,math.Floor(math.Log10(float64(s[i][j]))+1))); k++ {
 					fmt.Print(" ")
 				}
