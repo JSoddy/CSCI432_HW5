@@ -2,12 +2,7 @@ package main
 
 import (
 	"math"
-	"fmt"
-	"math/rand"
-	"time"
 	)
-
-const cellmax = 11
 
 // Function to calculate the product of two integer matrices
 //  Takes two matrices represented as 2D slices of integers
@@ -32,14 +27,9 @@ func mm_rec_init(factor1 [][]int, factor2 [][]int) (product [][]int){
 		// Then expand each matrix to a square of that size
 	factor1 = expand_matrix(factor1, int(maxside))
 	factor2 = expand_matrix(factor2, int(maxside))
-	// Initialize the result matrix with the proper size
-	product = make([][]int, int64(maxside))
-	for i := range product {
-		product[i] = make([]int, int(maxside))
-	}
+
 	// Now call the recursive function on the normalized matrices
-	// matrix_mult_recursive(factor1, factor2, product)
-	matrix_mult_recursive(factor1, factor2)
+	product = matrix_mult_recursive(factor1, factor2)
 
 	// Now trim off all trailing rows or columns which are
 	//  entirely zeroes, to return the matrix to the proper size
@@ -55,22 +45,18 @@ func mm_rec_init(factor1 [][]int, factor2 [][]int) (product [][]int){
 //  by 2D slices. The first two arguments are the matrices
 //  to be multiplied, and the third will hold the product.
 // Implement's Strassen's method
-// gr33n I redid this func inputs for testing
-// matrix [][]int){
-// 	matrix = make([][]int,length)
 func matrix_mult_recursive(factor1 [][]int, factor2[][]int) (product [][]int){
-// func matrix_mult_recursive(factor1[][]int, factor2[][]int){
 	lenF2 := len(factor2)
 	lenF1 := len(factor1)
-	product = make([][]int,lenF2)
-	product[0] = make([]int,lenF2)
+	product = make([][]int,lenF1)
+	product[0] = make([]int,lenF1)
 	//exit case
 	if lenF1==1 {
 		product[0][0] = factor1[0][0]*factor2[0][0]
 		return product
 	}
 	for i := 1; i < lenF1; i++ {
-		product[i] = make([]int,lenF2)
+		product[i] = make([]int,lenF1)
 	}
 
 	// In comments, factor1 = A, factor2 = B, product = C
@@ -81,7 +67,7 @@ func matrix_mult_recursive(factor1 [][]int, factor2[][]int) (product [][]int){
 		//A22 = A[n/2:n][n/2:n]
 	a11:=[][]int{}
 	for i := 0; i < lenF1/2; i++ {
-			a11 = append(a11, factor1[i][:lenF1/2])
+			a11 = append(a11, factor1[i][:lenF2/2])
 	}
 	// printmatrix(a11)
 
@@ -207,7 +193,7 @@ func matrix_mult_recursive(factor1 [][]int, factor2[][]int) (product [][]int){
 			product[i+lenF2/2][j+lenF2/2]=c22[i][j]
 		}
 	}
-	return product
+	return
 }
 
 // !!! Stub
@@ -217,10 +203,23 @@ func matrix_mult_recursive(factor1 [][]int, factor2[][]int) (product [][]int){
 //  and an integer one through 4, specifying which quadrant of the
 //  matrix to return, with 1 being the top left, 2 being the top right
 //  3 being the bottom left and 4 being the bottom right quadrant
-// Returns the slice modified to the original bounds
-// func get_matrix_quadrant(matrix [][]int, quadrant int){
-// 	return matrix
-// }
+func get_matrix_quadrant(input [][]int, quadrant int) (output [][]int){
+	size = len(input)
+	mid  = size / 2
+	int lower, upper, left
+	output = make([][]int, size)
+	switch (quadrant) {
+		case 1: left = 0; lower = 0; upper = mid
+		case 2: left = mid; right = size; lower = 0; upper = mid
+		case 3: left = 0; right = mid; lower = mid; upper = size
+		case 4: left = mid; right = size; lower = mid; upper = size
+	}
+	for int i = 1; i < mid; i++ {
+		output[i] = input[i+left][lower:upper]
+	}
+	
+ 	return // output
+}
 
 
 
@@ -259,6 +258,7 @@ func trim_matrix(matrix [][]int, width int, height int) ([][]int){
 	return matrix
 }
 
+/*
 // This function prints a matrix represented by a 2D slice Woot!
 func printmatrix(s [][]int){
 	// Let's just find out how many spaces we need to allow for each number.
@@ -279,7 +279,9 @@ func printmatrix(s [][]int){
 		fmt.Println("|")
 	}
 }
+*/
 
+/*
 // function to create a randomly initialized matrix
 //  accepts two integers w and h
 //  returns a w by h matrix represented as a 2D slice
@@ -293,7 +295,9 @@ func rndmatrix(h int, w int) (matrix [][]int){
 	}
 	return // matrix
 }
+*/
 
+/*
 //this assumes that the matrices are nxn
 func multiplyMatrix(a [][]int, b[][]int) (product [][]int){
 	lenA := len(a)
@@ -315,8 +319,9 @@ func multiplyMatrix(a [][]int, b[][]int) (product [][]int){
 	}
 	return product
 }
+*/
 
-// !!! Stub
+
 // Function to return the sum of two matrices
 // Takes as arguments two matrices represented by 2D slices,
 //  and returns a new 2D slice with their sum
@@ -332,7 +337,22 @@ func addMatrix(a [][]int, b [][]int) (matrix [][]int){
 	return //matrix
 }
 
-// !!! Stub
+// Function to return the sum of two matrices
+// Takes as arguments two matrices represented by 2D slices,
+//  and a third matrix to store the result
+func addMatrix2(a [][]int, b [][]int, matrix [][]int){
+	length := len(a)
+	//matrix = make([][]int,length)
+	for i := 0; i < length; i++ {
+		//matrix[i] = make([]int,length)
+		for j := 0; j < length; j++ {
+			matrix[i][j]=int(a[i][j]+b[i][j])
+		}
+	}
+	return //matrix
+}
+
+
 // Function to return the difference of two matrices
 // Takes as arguments two matrices represented by 2D slices,
 //  and returns a new 2D slice with their difference
@@ -348,6 +368,7 @@ func subMatrix(a [][]int, b [][]int) (matrix [][]int){
 	return //matrix
 }
 
+/*
 func main() {
 	rand.Seed(int64(time.Now().Nanosecond()))
 	// l := rand.Intn(9) + 2
@@ -366,3 +387,5 @@ func main() {
 	fmt.Println("Strassesn's algorithm on the two above matrixs")
 	printmatrix(strassesn)
 }
+
+*/

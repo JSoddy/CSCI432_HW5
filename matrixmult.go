@@ -9,24 +9,34 @@ import (
 
 // The maximum value we will put in any of our matrices
 const cellmax = 11
+const maxdimension = 10
+const mindimension = 2
 
 func main(){
 	rand.Seed(int64(time.Now().Nanosecond()))
-	l := rand.Intn(9) + 2
-	m := rand.Intn(9) + 2
-	n := rand.Intn(9) + 2
+	l := rand.Intn(maxdimension - mindimension) + mindimension
+	m := rand.Intn(maxdimension - mindimension) + mindimension
+	n := rand.Intn(maxdimension - mindimension) + mindimension
 
 	matrix1 := rndmatrix(l, m)
 	matrix2 := rndmatrix(m, n)
 
-	printmatrix(matrix1)
-	printmatrix(matrix2)
+	//printmatrix(matrix1)
+	//printmatrix(matrix2)
+	
+	start := time.Now()
+	/*matrix3 :=*/ dankalgy1(matrix1, matrix2)
+	elapsed := time.Since(start)
+	fmt.Printf("DankAlgy took %s\n", elapsed)
 
-	// matrix3 := dankalgy1(matrix1, matrix2)
+	//printmatrix(matrix3)
 
-	// printmatrix(matrix3)
+	start = time.Now()
+	/*matrix3_2 :=*/ mm_rec_init(matrix1, matrix2)
+	elapsed = time.Since(start)
+	fmt.Printf("Strassen took %s\n", elapsed)
 
-	// printmatrix(mm_rec_init(matrix1, matrix2))
+	//printmatrix(matrix3_2)
 }
 
 
