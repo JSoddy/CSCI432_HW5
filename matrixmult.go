@@ -9,8 +9,8 @@ import (
 
 // The maximum value we will put in any of our matrices
 const cellmax = 11
-const max_power = 10
-const min_power = 8
+const max_power = 6
+const min_power = 5
 
 func main(){
 	rand.Seed(int64(time.Now().Nanosecond()))
@@ -18,6 +18,7 @@ func main(){
 	//m := rand.Intn(maxdimension - mindimension) + mindimension
 	n := rand.Intn(max_power - min_power) + min_power
 	n = int(math.Pow(2,float64(n)))
+	fmt.Printf("The matrices are %d by %d\n", n, n)
 
 	matrix1 := rndmatrix(n, n)
 	matrix2 := rndmatrix(n, n)

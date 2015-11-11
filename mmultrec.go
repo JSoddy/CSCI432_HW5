@@ -113,7 +113,7 @@ func matrix_mult_recursive(factor1 [][]int, factor2[][]int) (product [][]int){
 
 	//Compute seven matrix products P1-P7
 		// P1 := A11*S1
-		p1 := matrix_mult_recursive(a11, s1)
+		p1 := matrix_mult_recursive(a11, s1) // Make these return to s1-s7!!! Woot ???!!!
 		// p1 := multiplyMatrix(a11, s1)
 
 		// P2 = S2*B22
@@ -196,13 +196,6 @@ func get_matrix_quadrant(input [][]int, quadrant int) (output [][]int){
 	}
  	return // output
 }
-
-
-
-
-
-
-
 
 // Function to increase the width and height of a matrix to a specified
 //  size
