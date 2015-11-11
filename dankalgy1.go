@@ -11,7 +11,7 @@ func dankalgy1(matrix1 [][]int, matrix2 [][]int) (matrix3 [][]int){
 	// Make sure that the two matrices have a product
 	l := len(matrix1)
 	if l > 0 {
-		m = len(matrix1[1])
+		m = len(matrix1[0])
 		if m > 0 && len(matrix2) == m {
 			n = len(matrix2[0])
 		}
