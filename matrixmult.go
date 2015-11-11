@@ -9,8 +9,8 @@ import (
 
 // The maximum value we will put in any of our matrices
 const cellmax = 11
-const max_power = 4
-const min_power = 3
+const max_power = 6
+const min_power = 5
 
 func main(){
 	rand.Seed(int64(time.Now().Nanosecond()))
@@ -23,24 +23,24 @@ func main(){
 	matrix1 := rndmatrix(n, n)
 	matrix2 := rndmatrix(n, n)
 
-	printmatrix(matrix1)
-	printmatrix(matrix2)
+	//printmatrix(matrix1)
+	//printmatrix(matrix2)
 	
 	start := time.Now()
-	matrix3 := 
+	//matrix3 := 
 	dankalgy1(matrix1, matrix2)
 	elapsed := time.Since(start)
 	fmt.Printf("DankAlgy took %s\n", elapsed)
 
-	printmatrix(matrix3)
+	//printmatrix(matrix3)
 
 	start = time.Now()
-	matrix3_2 := 
+	//matrix3_2 := 
 	mm_rec_init(matrix1, matrix2)
 	elapsed = time.Since(start)
 	fmt.Printf("Strassen took %s\n", elapsed)
 
-	printmatrix(matrix3_2)
+	//printmatrix(matrix3_2)
 }
 
 
