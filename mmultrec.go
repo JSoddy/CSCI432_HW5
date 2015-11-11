@@ -46,17 +46,15 @@ func mm_rec_init(factor1 [][]int, factor2 [][]int) (product [][]int){
 //  to be multiplied, and the third will hold the product.
 // Implement's Strassen's method
 func matrix_mult_recursive(factor1 [][]int, factor2[][]int) (product [][]int){
-	lenF2 := len(factor2)
 	lenF1 := len(factor1)
 	product = make([][]int,lenF1)
-	product[0] = make([]int,lenF1)
+	for i := range product{
+		product[i] = make([]int,lenF1)
+	}
 	//exit case
 	if lenF1==1 {
 		product[0][0] = factor1[0][0]*factor2[0][0]
 		return product
-	}
-	for i := 1; i < lenF1; i++ {
-		product[i] = make([]int,lenF1)
 	}
 
 	// In comments, factor1 = A, factor2 = B, product = C
@@ -65,58 +63,31 @@ func matrix_mult_recursive(factor1 [][]int, factor2[][]int) (product [][]int){
 		//A12 = A[n/2:n][0:n/2]
 		//A21 = A[0:n/2][n/2:n]
 		//A22 = A[n/2:n][n/2:n]
-	a11:=[][]int{}
-	for i := 0; i < lenF1/2; i++ {
-			a11 = append(a11, factor1[i][:lenF2/2])
-	}
-	// printmatrix(a11)
-
-	a12:=[][]int{}
-	for i := 0; i < lenF1/2; i++ {
-			a12 = append(a12, factor1[i][lenF2/2:])
-	}
-	// printmatrix(a12)
-
-	a21:=[][]int{}
-	for i := lenF1/2; i < lenF1; i++ {
-			a21 = append(a21, factor1[i][:lenF2/2])
-	}
-	// printmatrix(a21)
-
-	a22:=[][]int{}
-	for i := lenF1/2; i < lenF1; i++ {
-			a22 = append(a22, factor1[i][lenF2/2:])
-	}
-	// printmatrix(a22)
+	
+	a11:=get_matrix_quadrant(factor1, 1)
+	a12:=get_matrix_quadrant(factor1, 2)
+	a21:=get_matrix_quadrant(factor1, 3)
+	a22:=get_matrix_quadrant(factor1, 4)
 
 		//B11 = B[0:n/2][0:n/2]
 		//B12 = B[n/2:n][0:n/2]
 		//B21 = B[0:n/2][n/2:n]
 		//B22 = B[n/2:n][n/2:n]
 
-		b11:=[][]int{}
-		for i := 0; i < lenF2/2; i++ {
-				b11 = append(b11, factor2[i][:lenF2/2])
-		}
-		// printmatrix(b11)
+	b11:=get_matrix_quadrant(factor2, 1)
+	b12:=get_matrix_quadrant(factor2, 2)
+	b21:=get_matrix_quadrant(factor2, 3)
+	b22:=get_matrix_quadrant(factor2, 4)
 
-		b12:=[][]int{}
-		for i := 0; i < lenF2/2; i++ {
-				b12 = append(b12, factor2[i][lenF2/2:])
-		}
-		// printmatrix(b12)
+		//C11 = C[0:n/2][0:n/2]
+		//C12 = C[n/2:n][0:n/2]
+		//C21 = C[0:n/2][n/2:n]
+		//C22 = C[n/2:n][n/2:n]
 
-		b21:=[][]int{}
-		for i := lenF2/2; i < lenF2; i++ {
-				b21 = append(b21, factor2[i][:lenF2/2])
-		}
-		// printmatrix(b21)
-
-		b22:=[][]int{}
-		for i := lenF2/2; i < lenF2; i++ {
-				b22 = append(b22, factor2[i][lenF2/2:])
-		}
-		// printmatrix(b22)
+	c11:=get_matrix_quadrant(product, 1)
+	c12:=get_matrix_quadrant(product, 2)
+	c21:=get_matrix_quadrant(product, 3)
+	c22:=get_matrix_quadrant(product, 4)
 
 	//Create ten sub-matrices, S1-S10 through addition or subtraction
 		//S1 = B12-B22
@@ -172,15 +143,20 @@ func matrix_mult_recursive(factor1 [][]int, factor2[][]int) (product [][]int){
 
 	//Compute product via sums or differences of P1-P7
 		//C11 = P5 + P4 - P2 + P6
-		c11 := addMatrix(subMatrix(addMatrix(p5,p4),p2),p6)
+		addMatrix2(p5,p4,c11)
+		subMatrix2(c11,p2,c11)
+		addMatrix2(c11,p6,c11)
 		//C12 = P1 + P2
-		c12 := addMatrix(p1,p2)
+		addMatrix2(p1,p2,c12)
 		//C21 = P3 + P4
-		c21 := addMatrix(p3,p4)
+		addMatrix2(p3,p4,c21)
 		//C22 = P5 + P1 - P3 - P7
-		c22 := subMatrix(subMatrix(addMatrix(p1,p5),p3),p7)
+		addMatrix2(p1,p5,c22)
+		subMatrix2(c22,p3,c22)
+		subMatrix2(c22,p7,c22)
 	//And we're done
 	//After we build the return 2d slice from c11-c22
+		/*
 	for i := 0; i < lenF2/2; i++ {
 		for j := 0; j < lenF2/2; j++ {
 			//quadrant 11
@@ -193,6 +169,7 @@ func matrix_mult_recursive(factor1 [][]int, factor2[][]int) (product [][]int){
 			product[i+lenF2/2][j+lenF2/2]=c22[i][j]
 		}
 	}
+		*/
 	return
 }
 
@@ -204,20 +181,19 @@ func matrix_mult_recursive(factor1 [][]int, factor2[][]int) (product [][]int){
 //  matrix to return, with 1 being the top left, 2 being the top right
 //  3 being the bottom left and 4 being the bottom right quadrant
 func get_matrix_quadrant(input [][]int, quadrant int) (output [][]int){
-	size = len(input)
-	mid  = size / 2
-	int lower, upper, left
-	output = make([][]int, size)
+	size := len(input)
+	mid  := size / 2
+	var lower, upper, left int
+	output = make([][]int, mid)
 	switch (quadrant) {
 		case 1: left = 0; lower = 0; upper = mid
-		case 2: left = mid; right = size; lower = 0; upper = mid
-		case 3: left = 0; right = mid; lower = mid; upper = size
-		case 4: left = mid; right = size; lower = mid; upper = size
+		case 2: left = 0; lower = mid; upper = size
+		case 3: left = mid; lower = 0; upper = mid
+		case 4: left = mid; lower = mid; upper = size
 	}
-	for int i = 1; i < mid; i++ {
+	for i := 0; i < mid; i++ {
 		output[i] = input[i+left][lower:upper]
 	}
-	
  	return // output
 }
 
@@ -346,12 +322,11 @@ func addMatrix2(a [][]int, b [][]int, matrix [][]int){
 	for i := 0; i < length; i++ {
 		//matrix[i] = make([]int,length)
 		for j := 0; j < length; j++ {
-			matrix[i][j]=int(a[i][j]+b[i][j])
+			matrix[i][j]=a[i][j]+b[i][j]
 		}
 	}
-	return //matrix
+	return 
 }
-
 
 // Function to return the difference of two matrices
 // Takes as arguments two matrices represented by 2D slices,
@@ -366,6 +341,21 @@ func subMatrix(a [][]int, b [][]int) (matrix [][]int){
 		}
 	}
 	return //matrix
+}
+
+// Function to return the difference of two matrices
+// Takes as arguments two matrices represented by 2D slices,
+//  and returns a new 2D slice with their difference
+func subMatrix2(a [][]int, b [][]int, matrix [][]int){
+	length := len(a)
+	//matrix = make([][]int,length)
+	for i := 0; i < length; i++ {
+		//matrix[i] = make([]int,length)
+		for j := 0; j < length; j++ {
+			matrix[i][j]=a[i][j]-b[i][j]
+		}
+	}
+	return 
 }
 
 /*

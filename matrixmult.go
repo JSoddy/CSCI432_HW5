@@ -21,22 +21,22 @@ func main(){
 	matrix1 := rndmatrix(l, m)
 	matrix2 := rndmatrix(m, n)
 
-	//printmatrix(matrix1)
-	//printmatrix(matrix2)
+	printmatrix(matrix1)
+	printmatrix(matrix2)
 	
 	start := time.Now()
-	/*matrix3 :=*/ dankalgy1(matrix1, matrix2)
+	matrix3 := dankalgy1(matrix1, matrix2)
 	elapsed := time.Since(start)
 	fmt.Printf("DankAlgy took %s\n", elapsed)
 
-	//printmatrix(matrix3)
+	printmatrix(matrix3)
 
 	start = time.Now()
-	/*matrix3_2 :=*/ mm_rec_init(matrix1, matrix2)
+	matrix3_2 := mm_rec_init(matrix1, matrix2)
 	elapsed = time.Since(start)
 	fmt.Printf("Strassen took %s\n", elapsed)
 
-	//printmatrix(matrix3_2)
+	printmatrix(matrix3_2)
 }
 
 
