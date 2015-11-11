@@ -28,8 +28,15 @@ func mm_rec_init(factor1 [][]int, factor2 [][]int) (product [][]int){
 	factor1 = expand_matrix(factor1, int(maxside))
 	factor2 = expand_matrix(factor2, int(maxside))
 
+	// Create a return array
+	product = make([][]int, int(maxside))
+	for i := range product{
+		product[i] = make([]int, int(maxside))
+	}
+
 	// Now call the recursive function on the normalized matrices
-	product = matrix_mult_recursive(factor1, factor2)
+	//product = 
+	matrix_mult_recursive(factor1, factor2, product)
 
 	// Now trim off all trailing rows or columns which are
 	//  entirely zeroes, to return the matrix to the proper size
@@ -45,16 +52,17 @@ func mm_rec_init(factor1 [][]int, factor2 [][]int) (product [][]int){
 //  by 2D slices. The first two arguments are the matrices
 //  to be multiplied, and the third will hold the product.
 // Implement's Strassen's method
-func matrix_mult_recursive(factor1 [][]int, factor2[][]int) (product [][]int){
+func matrix_mult_recursive(factor1 [][]int, factor2[][]int, product [][]int){
 	lenF1 := len(factor1)
+	/*
 	product = make([][]int,lenF1)
 	for i := range product{
 		product[i] = make([]int,lenF1)
-	}
+	} */
 	//exit case
 	if lenF1==1 {
 		product[0][0] = factor1[0][0]*factor2[0][0]
-		return product
+		return // product
 	}
 
 	// In comments, factor1 = A, factor2 = B, product = C
@@ -113,47 +121,54 @@ func matrix_mult_recursive(factor1 [][]int, factor2[][]int) (product [][]int){
 
 	//Compute seven matrix products P1-P7
 		// P1 := A11*S1
-		p1 := matrix_mult_recursive(a11, s1) // Make these return to s1-s7!!! Woot ???!!!
+		//p1 := 
+		matrix_mult_recursive(a11, s1, s1) // Make these return to s1-s7!!! Woot ???!!!
 		// p1 := multiplyMatrix(a11, s1)
 
 		// P2 = S2*B22
-		p2 := matrix_mult_recursive(s2, b22)
+		//p2 := 
+		matrix_mult_recursive(s2, b22, s2)
 		// p2 := multiplyMatrix(s2, b22)
 
 		// P3 = S3*B11
-		p3 := matrix_mult_recursive(s3,b11)
+		//p3 := 
+		matrix_mult_recursive(s3,b11, s3)
 		// p3 := multiplyMatrix(s3,b11)
 
 		// P4 = A22*S4
-		p4 := matrix_mult_recursive(a22, s4)
+		//p4 := 
+		matrix_mult_recursive(a22, s4, s4)
 		// p4 := multiplyMatrix(a22, s4)
 
 		// P5 = S5*S6
-		p5 := matrix_mult_recursive(s5, s6)
+		//p5 := 
+		matrix_mult_recursive(s5, s6, s5)
 		// p5 := multiplyMatrix(s5, s6)
 
 		// P6 = S7*S8
-		p6 := matrix_mult_recursive(s7, s8)
+		//p6 := 
+		matrix_mult_recursive(s7, s8, s6)
 		// p6 := multiplyMatrix(s7, s8)
 
 		// P7 = S9*S10
-		p7 := matrix_mult_recursive(s9, s10)
+		//p7 := 
+		matrix_mult_recursive(s9, s10, s7)
 		// p7 := multiplyMatrix(s9, s10)
 
 
 	//Compute product via sums or differences of P1-P7
 		//C11 = P5 + P4 - P2 + P6
-		addMatrix2(p5,p4,c11)
-		subMatrix2(c11,p2,c11)
-		addMatrix2(c11,p6,c11)
+		addMatrix2(s5,s4,c11)
+		subMatrix2(c11,s2,c11)
+		addMatrix2(c11,s6,c11)
 		//C12 = P1 + P2
-		addMatrix2(p1,p2,c12)
+		addMatrix2(s1,s2,c12)
 		//C21 = P3 + P4
-		addMatrix2(p3,p4,c21)
+		addMatrix2(s3,s4,c21)
 		//C22 = P5 + P1 - P3 - P7
-		addMatrix2(p1,p5,c22)
-		subMatrix2(c22,p3,c22)
-		subMatrix2(c22,p7,c22)
+		addMatrix2(s1,s5,c22)
+		subMatrix2(c22,s3,c22)
+		subMatrix2(c22,s7,c22)
 	//And we're done
 	//After we build the return 2d slice from c11-c22
 		/*
