@@ -5,77 +5,83 @@ import (
 	"math"
 	"math/rand"
 	"time"
+	"os"
+	"bufio"
 	)
 
 // The maximum value we will put in any of our matrices
 const cellmax = 11
-const max_power = 6
-const min_power = 5
+const max_power_of_2 = 15
 
 func main(){
 	rand.Seed(int64(time.Now().Nanosecond()))
-	//l := rand.Intn(maxdimension - mindimension) + mindimension
-	//m := rand.Intn(maxdimension - mindimension) + mindimension
-	n := rand.Intn(max_power - min_power) + min_power
-	n = int(math.Pow(2,float64(n)))
-	fmt.Printf("The matrices are %d by %d\n", n, n)
 
-	matrix1 := rndmatrix(n, n)
-	matrix2 := rndmatrix(n, n)
-
-	//printmatrix(matrix1)
-	//printmatrix(matrix2)
+	// Open file or writing results
+	file, err := os.Create("Output.csv")
+	if err != nil {
+		panic(err)
+	}
+	// close file on exit and check for its returned error
+	defer func() {
+		if err := file.Close(); err != nil {
+			panic(err)
+		}
+	}()
+	// Attach file writer to buffered reader
+	r := bufio.NewWriter(file)
 	
-	start := time.Now()
-	//matrix3 := 
-	dankalgy1(matrix1, matrix2)
-	elapsed := time.Since(start)
-	fmt.Printf("DankAlgy took %s\n", elapsed)
+	// Make sure all of our output gets written on exit
+	defer func() {
+		r.Flush()
+	}()
 
-	//printmatrix(matrix3)
-
-	start = time.Now()
-	//matrix3_2 := 
-	mm_rec_init(matrix1, matrix2)
-	elapsed = time.Since(start)
-	fmt.Printf("Strassen took %s\n", elapsed)
-
-	//printmatrix(matrix3_2)
-}
-
-
-
-// function to create a randomly initialized matrix
-//  accepts two integers w and h
-//  returns a w by h matrix represented as a 2D slice
-func rndmatrix(h int, w int) (matrix [][]int){
-	matrix = make([][]int, h)
-	for i := range matrix {
-		matrix[i] = make([]int, w)
-		for j := range matrix[i] {
-			matrix[i][j] = rand.Intn(cellmax)
-		}
+	r.WriteString(" ,")
+	
+	var a string
+	
+	for i := 0; i <= max_power_of_2; i++ {
+		a = fmt.Sprintf("%d,", int(math.Pow(2, float64(i))))
+		r.WriteString(a)
 	}
-	return // matrix
+
+	pow := 0
+	n   := 0
+
+	seconds := 0.0
+	r.WriteString("\nnaive,")
+	for seconds < 180 {
+		n        = int(math.Pow(2, float64(pow)))
+		pow++
+		fmt.Printf("Computing naive for %d by %d:\n", n, n)
+		matrix1 := rndmatrix(n, n)
+		matrix2 := rndmatrix(n, n)
+		start   := time.Now()
+		dankalgy1(matrix1, matrix2)
+		elapsed := time.Since(start)
+		seconds = elapsed.Seconds()
+		fmt.Printf("Took %f seconds.\n", seconds)
+		a = fmt.Sprintf("%d,", elapsed.Nanoseconds())
+		r.WriteString(a)
+	}
+	fmt.Println("Done with naive")
+	r.WriteString("\nStrassen's,")
+	n = 0
+	pow = 0
+	seconds = 0.0
+	for seconds < 180 {
+		n        = int(math.Pow(2, float64(pow)))
+		pow++
+		fmt.Printf("Computing Strassen's for %d by %d:\n", n, n)
+		matrix1 := rndmatrix(n, n)
+		matrix2 := rndmatrix(n, n)
+		start   := time.Now()
+		mm_rec_init(matrix1, matrix2)
+		elapsed := time.Since(start)
+		seconds = elapsed.Seconds()
+		fmt.Printf("Took %f seconds.\n", seconds)
+		a = fmt.Sprintf("%d,", elapsed.Nanoseconds())
+		r.WriteString(a)
+	}
+	r.WriteString("\n")
 }
 
-// This function prints a matrix represented by a 2D slice Woot!
-func printmatrix(s [][]int){
-	// Let's just find out how many spaces we need to allow for each number.
-	//  Nevermind why
-	numwidth := math.Floor(math.Log10(math.Pow(cellmax-1, 2) * float64(len(s)))) + 1
-	fmt.Println()
-	for i := range s {
-		fmt.Print("| ")
-		for j := range s[i] {
-			// Pay no attention to this ugliness. It's not really here
-			for k := 0; k < int(numwidth -
-				math.Max(1,math.Floor(math.Log10(float64(s[i][j]))+1))); k++ {
-					fmt.Print(" ")
-				}
-			// What ugliness? I don't know what you are talking about.
-			fmt.Printf("%d ", s[i][j])
-		}
-		fmt.Println("|")
-	}
-}
